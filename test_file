@@ -1,1 +1,101 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
+#define VERSION 3
+
+void startup(){
+  // Display Program Title
+  printf("Calculator Program Version %d\n", VERSION);
+  puts("Code Developed by Alec Cheng");
+
+  // Display Start Time But It's Weird
+  time_t start_time;
+  start_time = time(NULL);
+  printf("start_time: %lu\n", start_time);
+
+  // Display Start Time But It's Good
+  char *start_time_str;
+  start_time_str = ctime(&start_time);
+  printf("%s", start_time_str);
+}
+
+  int sum(int num1, int num2){
+    return num1 + num2;
+  }
+  int sub(int num1, int num2){
+    return num1 - num2;
+  }
+  int mult(int num1, int num2){
+    return num1 * num2;
+  }
+  int divide(int num1, int num2){
+    return num1 / num2;
+  }
+  int rem(int num1, int num2){
+    return num1 % num2;
+  }
+
+int main(int argc, char *argv[]){
+
+  printf("argc: %d\n", argc);
+  // Display Startup Info
+  startup();
+
+  int result;
+  int number1;
+  int number2;
+  // Get the operation
+  char op;
+
+  // Get inputs
+  if (1 == argc) {
+    printf("Enter number 1: ");
+    scanf("%d", &number1);
+
+    // Eat the trailing newline
+    getchar();
+
+    printf("Enter the operation(+,-,*,/,%%): ");
+    scanf("%c", &op);
+
+    printf("Enter number 2: ");
+    scanf("%d", &number2);
+  }  
+  else {
+    // Assume 4 arguments
+    // Testing:
+    printf("argv[0]: %s\n", argv[0]);
+    printf("argv[1]: %s\n", argv[1]);
+      number1 = atoi(argv[1]); // Gets number 1
+    printf("argv[2]: %s\n", argv[2]);
+      op = argv[2][0];
+    printf("argv[3]: %s\n", argv[3]);
+      number2 = atoi(argv[3]); // Gets number 1
+  }
+
+    printf("OK: %d %c %d\n", number1, op, number2);
+
+  // Based on operation:
+    // add
+      result = sum(number1, number2);
+      if ('+' == op) printf("sum: %d\n", result);
+    // sub
+      result = sub(number1, number2);
+      if ('-' == op) printf("diff: %d\n", result);
+    // mult
+      result = mult(number1, number2);
+      if ('*' == op) printf("product: %d\n", result);
+    // div
+      result = divide(number1, number2);
+      if ('/' == op) printf("quotient: %d\n", result);
+    // remainder
+      result = rem(number1, number2);
+      if ('%' == op) printf("remainder: %d\n", result);
+
+  printf("All Done\n");
+
+  return 0;
+
+}
 
