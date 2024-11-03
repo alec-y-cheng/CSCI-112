@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <time.h>
+
+#define VERSION 5
+#define ORDER_PREP_TIME 10 // minutes
+
+// Items in the order
+// Global variables (var in functions are local)
+int num_apples = 0;
+int num_burgers = 0;
+int num_corn = 0;
+int num_drinks = 0;
+int num_extras = 0;
+int num_fries = 0;
+
+void display_title(){
+    printf("Food Menu Program\n");
+    printf("Version %d\n", VERSION);
+    printf("Code by Alec Cheng\n");
+}
+
+void display_welcome(){
+    puts("Welcome to our new online ordering system!");
+}
+
+void ask_about_specials(){
+    printf("Do you want to see today's specials (y/n): ");
+    int c = getchar();
+    printf("c: %c\n", c);
+    if (c == 'y'|| c =='Y'){
+        puts("Here are today's specials: ");
+    }
+    getchar(); // Eat trailing newline
+}
+
+// Return 1 if takeout and 0 if delivery, -1 on error
+int determine_takeout_or_delivery() {
+    printf("Is this takeout or delivery? (t/d)");
+    int c = getchar();
+    getchar();
+    printf("c: %d - %c\n",c, c);
+        if (c == 'd') {
+            return 0;
+        }
+        else if (c == 't'){
+            return 1;
+        }
+    return -1; // Error condition
+}
+
+void display_menu() {
+    puts("Menu Options: ");
+    puts ("a) Apple, b) Burger, c) Corn, d) Drink, "
+    "e) Extra, f) Fries, q) Quit");
+}
+
+void take_the_order() {
+    // while taking order
+    int taking_order = 1; // true
+    while (1 == taking_order) {
+        display_menu();
+        int choice = getchar();
+        printf("choice: %d - %c\n", choice, choice);
+        getchar();
+        switch (choice) {
+            case 'a': 
+                num_apples++;
+                break;
+            case 'b': 
+                num_burgers++;
+                break;
+            case 'c': 
+                num_corn++;
+                break;
+            case 'd': 
+                num_drinks++;
+                break;
+            case 'e': 
+                num_extras++;
+                break;
+            case 'f': 
+                num_fries++;
+                break;
+            case 'q': return;
+            default: puts("Please enter menu choice");
+        }
+    }
+
+}
+int main (void){
+    // Display Program Title, Version, Developer
+    display_title();
+
+    // Display Welcome to the Food Store
+    display_welcome();
+
+    // Ask if specials are displayed
+    ask_about_specials();
+
+    //Handle takout or delivery
+    int result;
+    result = determine_takeout_or_delivery();
+
+        if (result == 0) {
+            puts("Handle delivery details");
+        }
+        else if (result == 1) {
+            puts("Handle takeout details");
+        }
+        else {
+            puts("Handle error");
+        }
+
+    // Take the order
+    take_the_order();    
+
+    // Add items and calculate the price
+    int total = num_apples + num_burgers + num_corn + 
+    num_drinks +  num_extras + num_fries;  
+
+        printf("Your order is: \n");
+        if (0 != num_apples){
+            printf("num_apples: %d\n", num_apples);
+        }
+        if (0 != num_burgers){
+            printf("num_burgers: %d\n", num_burgers);
+        }
+        if (0 != num_corn){
+            printf("num_corn: %d\n", num_corn);
+        }
+        if (0 != num_drinks){
+            printf("num_drinks: %d\n", num_drinks);
+        }
+        if (0 != num_extras){
+            printf("num_extras: %d\n", num_extras);
+        }
+        if (0 != num_fries){
+            printf("num_fries: %d\n", num_fries);
+        }
+
+    printf("Your total is %d dollars\n", total);
+
+    // Handle payment  method
+    printf("Select payment method: \n");
+    printf("1) Cash, 2)Charge, 3)Crypto: ");
+    int c = getchar();
+    getchar();
+    switch (c) {
+        case '1': puts("handle cash"); break;
+        case '2': puts("handle charge"); break;
+        case '3': puts("handle crypto"); break;
+        default: puts("Handle error");
+    }
+
+    // Display order summary and order time
+    time_t now = time(NULL);
+    printf("Your order was placed at: \n");
+    char *now_str;
+    now_str = ctime(&now);
+    printf("%s", now_str);
+
+    printf("Your total is %d dollars\n", total);
+
+    printf("Your order will be ready in %d minutes\n", 
+        ORDER_PREP_TIME);
+
+    return 0;
+}
