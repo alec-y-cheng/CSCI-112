@@ -1,0 +1,163 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define PROGRAM_NAME "Loop-D-Loo"
+#define VERSION "3.0.0" //Major/Minor/Bug-Fix
+#define DEVELOPER "Alec Cheng"
+
+#define START_NUM_MIN 1
+#define START_NUM_MAX 10
+
+#define END_NUM_MIN 10
+#define END_NUM_MAX 100
+
+// Display startup info
+void display_start_info() {
+    puts(PROGRAM_NAME);
+    printf("Version %s\n", VERSION);
+    printf("Programmed by %s\n", DEVELOPER);
+
+    time_t now;
+    time(&now);
+    char *s = ctime(&now);
+    printf("%s", s);
+}
+
+// Continue function
+// Return 0 to continue, 1 to not
+int prompt_continue() {
+    printf("Do you want to continue? (y/n)");
+    int c = getchar();
+    getchar(); // Eat new line
+
+    if (('y' == c) || ('Y' == c)) return 0;
+    return 1;
+}
+
+void prompt_for_numbers(int *start_number, int *end_number) {
+    // *start_number = 123;
+    // *end_number = 456;
+    if (start_number) {
+        printf("Enter start number from %d to %d: ", 
+            START_NUM_MIN, START_NUM_MAX);
+        scanf("%d", start_number);
+
+        if ((*start_number < START_NUM_MIN) || (*start_number > START_NUM_MAX)){
+            puts("Numbers not in range");
+            exit(1);
+        }
+    }
+    if (end_number) {
+        printf("Enter end number from %d to %d: ", 
+            END_NUM_MIN, END_NUM_MAX);
+        scanf("%d", end_number);
+
+        if ((*end_number < END_NUM_MIN) || (*end_number > END_NUM_MAX)){
+            puts("Numbers not in range");
+            exit(2);
+    }
+    }
+
+}
+
+void handle_command_line(int argc, char *argv[], int *start_number, int *end_number) {
+    // if no command line args other than command
+    if (argc == 1) return;
+    if (argc < 3) {
+        puts("Not enough args");
+        return;
+    }
+    // Handle First Number Argument
+    if (argc >= 3 && (strcmp("--start", argv[1]) == 0)) {
+        *start_number = atoi(argv[2]);
+    }
+    // Handle End Number Argument
+    if (argc >= 5 && (strcmp("--end", argv[3]) == 0)) {
+        *end_number = atoi(argv[4]);
+    }
+
+}
+
+
+int main (int argc, char *argv[]){
+    display_start_info();
+
+    // Continue?
+
+    if (prompt_continue()){
+        puts("OK. Goodbye");
+        return 0;
+    }
+
+
+    // Demo for()
+    puts("for loop:");
+    for (int i = 0; i < argc; i++) {
+        printf("argv[%d]: %s\n", i, argv[i]);
+    }
+
+    // Demo while()
+    puts("while loop:");
+    int j = 0;
+    while (j < argc) {
+        printf("argv[%d]: %s\n", j, argv[j]);
+        j++;
+    }
+
+    // Demo do while()
+    puts("do while loop:");
+    j = 0;
+    do {
+        printf("argv[%d]: %s\n", j, argv[j]);
+        j++;
+    } while (j < argc);
+
+    // Starting number from 1-10
+    // Ending number 10 - 100
+    int start_number = 0; // invalid value to start
+    int end_number = 0;
+
+    // Handle command line
+    handle_command_line(argc, argv, &start_number, &end_number);
+
+    // Prompt user for numbers
+    if ((0 == start_number) && (0 == end_number)) {
+        prompt_for_numbers(&start_number, &end_number);
+    }
+    else if ((0 == start_number) && (0 != end_number)) {
+        prompt_for_numbers(&start_number, NULL);
+    }
+    else if ((0 != start_number) && (0 == end_number)) {
+        prompt_for_numbers(NULL, &end_number);
+    }
+    else 
+        prompt_for_numbers(NULL, NULL);
+
+    printf("start number: %d\n", start_number);
+    printf("end number: %d\n", end_number);
+    
+
+    // Use numbers to demo for, while, do while
+    for (int i = start_number; i <= end_number; i++ ) {
+        printf("%d ", i);
+    }
+    printf("\n");
+
+    j = start_number;
+    while (j <= end_number) {
+        printf("%d ", j);
+        j++;
+    }
+    printf("\n");
+
+    do {
+        printf("%d ", j);
+        j++;
+    } while (j <= end_number);
+    printf("\n");
+
+    puts("All done");
+    return 0;
+}
