@@ -1,0 +1,72 @@
+main.c file
+__________________________________________________________________
+# include <stdio.h>
+# include "hello.h"
+# include "goodbye.h"
+# include <string.h>
+
+
+int main (void) {
+    printf("Test of Hello Library\n");
+
+    hello_init();
+    hello_name("Alec");
+
+    goodbye_init();
+    goodbye_name("Alec");
+    return 0;
+}
+
+hello.h file
+__________________________________________________________________
+#ifndef __HELLO_H_
+#define __HELLO_H_
+
+void hello_init();
+
+void hello_name(char *name);
+
+#endif
+
+hello.c file
+__________________________________________________________________
+#include <stdio.h>
+#include "hello.h"
+#include "string.h"
+
+void hello_init() {
+    printf("Hello\n");
+}
+
+void hello_name(char *name) {
+    printf("Name is %s\n", name);
+}
+
+goodbye.h file
+__________________________________________________________________
+#ifndef __GOODBYE_H_
+#define __GOODBYE_H_
+
+#ifdef __cplusplus
+extern "C" {
+    #endif
+
+    void goodbye_init();
+    void goodbye_name(const char *name);
+
+    #ifdef __cplusplus
+}
+#endif
+
+#endif
+goodbye.c file
+__________________________________________________________________
+#include <stdio.h>
+#include "goodbye.h"
+
+void goodbye_init(){
+
+    }
+void goodbye_name(const char *name) {
+        printf("Goodbye %s\n", name);
+    }
