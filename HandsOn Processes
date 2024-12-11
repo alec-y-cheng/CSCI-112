@@ -1,0 +1,71 @@
+main.c code
+--------------------------------
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int main(void) {
+    printf("HandsOn Processes\n");
+    printf("Code by Alec Cheng\n");
+
+    pid_t pid = getpid();
+    pid_t ppid = getppid();
+    printf("pid: %d, ppid: %d\n", pid, ppid); 
+
+    int result = system("ps");
+    printf("result: %d\n", result); 
+
+    result = system("pstree");
+    printf("result: %d\n", result); 
+
+    pid_t child_pid = fork();
+    if (-1 == child_pid) {
+        perror("fork");
+        return 1;
+    } // so now we have two processes running at the same time parent and child
+    if (child_pid) { // if the child process encounters this one, it will execute it, parent moves on
+        printf("PARENT! pid: %d, ppid: %d, child_pid: %d\n",
+            getpid(), getppid(), child_pid);
+        int wait_status = 0;
+        pid = wait(&wait_status);
+        printf("PARENT: Returned form wait: pid: %d\n", pid); // pid in this case is the wait process ID
+        printf("PARENT: child exit status: %d\n", WEXITSTATUS(wait_status));
+    }
+    else { // parent executes this code
+        printf("CHILD\n");
+        char *argv[] = { "./add", "1", "2", NULL }; // arguments to be passed to new program
+        char *envp[] = { NULL }; // environment variables to pass
+        int result = execve("./add", argv, envp); // executing new program with those arguments from main!
+        if (-1 == result) { // error message if fails
+            perror("execve");
+        }
+    }
+
+    return 0;
+}
+
+add.c code
+--------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main (int argc, char *argv[]) {
+
+    if (argc < 3) {
+        printf("ADD PROGRAM USAGE: NUM1 NUM2\n");
+        return 1;
+    }
+
+    if ((strlen(argv[1]) !=1) && (strlen(argv[2]) != 1)){
+        printf("Usage single digit number\n");
+        return 2;
+    }
+    int num1 = atoi(argv[1]);
+    int num2 = atoi(argv[2]);
+    int sum = num1 + num2;
+    return sum;
+
+}
