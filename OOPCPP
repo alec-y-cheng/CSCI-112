@@ -1,0 +1,194 @@
+calc.c
+------------------------------------------------------------------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "calc.h"
+
+typedef struct {
+    int num1;
+    int num2;
+    int sum;
+    int mult;
+} calc_t;
+
+calc_handle_t calc_alloc() { // creates a new object of calculator type, the handle is a pointer to that memory where the data is stored
+    return calloc(1, sizeof(calc_t)); // calloc allocates memory for 1 structure
+}
+void calc_free(calc_handle_t handle) {
+    free(handle);
+}
+
+void calc_num1_set(calc_handle_t handle, int num) { // these functions assign handles passed in to pointers immediately 
+// so you can call a function and perform operations on a particular object based on the handle
+    calc_t *p = handle;
+    p-> num1 = num;
+}
+int calc_num1_get(calc_handle_t handle){
+    calc_t *p = handle;
+    return p->num1;
+}
+void calc_num2_set(calc_handle_t handle, int num){
+    calc_t *p = handle;
+    p->num2 = num;
+}
+
+int calc_num2_get(calc_handle_t handle){
+    calc_t *p = handle;
+    return p->num2;
+}
+
+int calc_sum(calc_handle_t handle){
+    calc_t *p = handle;
+    return p-> num1 + p-> num2;
+}
+int calc_mult(calc_handle_t handle){
+    calc_t *p = handle;
+    return p -> num1 * p-> num2;
+}
+
+calc.h
+------------------------------------------------------------------------------------------
+#ifndef __CALC_H_
+#define __CALC_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+typedef void *calc_handle_t; 
+
+calc_handle_t calc_alloc();
+void calc_free(calc_handle_t handle);
+
+void calc_num1_set(calc_handle_t handle, int num); // handle references the object created in line 8
+int calc_num1_get(calc_handle_t handle);
+
+void calc_num2_set(calc_handle_t handle, int num);
+int calc_num2_get(calc_handle_t handle);
+
+int calc_sum(calc_handle_t handle);
+int calc_mult(calc_handle_t handle);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+Calc.cpp
+------------------------------------------------------------------------------------------
+
+#include <iostream>
+
+#include "Calc.h"
+
+Calc::Calc() {
+    std::cout <<"Calc::Calc" << std::endl; // cout: standard output, endl: endline
+}
+
+Calc::~Calc() {
+    std::cout <<"Calc::~Calc" << std::endl; // when it gets destroyed
+}
+
+void Calc::num1_set(int num) { // num1 is an instance of this class
+    num1 = num;
+}
+int Calc::num1_get() {
+    return num1;
+}
+void Calc::num2_set(int num) { // pointers are hidden
+    num2 = num;
+}
+int Calc::num2_get() {
+    return num2;
+}
+
+int Calc::sum_get() {
+    return num1 + num2;
+}
+int Calc::mult_get() {
+    return num1 * num2;
+}
+
+Calc.h
+------------------------------------------------------------------------------------------
+class Calc {
+    
+    public: // public methods, can be called outside
+        Calc(); // constructor (initializes class)
+        ~Calc(); // destructor (cleans up when object gets destroyed)
+        
+        void num1_set(int num);
+        int num1_get();
+        
+        void num2_set(int num);
+        int num2_get();
+        
+        int sum_get();
+        int mult_get();
+        
+    private: // cannot be accessed outside class
+        int num1;
+        int num2;
+        int sum;
+        int mult;
+};
+
+main.c
+------------------------------------------------------------------------------------------
+#include <stdio.h>
+
+#include "calc.h"
+
+int main (void) {
+    printf("OOP with C\n");
+    
+    calc_handle_t calc_handle = calc_alloc();
+    if (NULL == calc_handle) {
+        fprintf(stderr, "calc_alloc() failed\n");
+        return 0;
+    }
+    
+    calc_num1_set(calc_handle, 10);
+    calc_num2_set(calc_handle, 20);
+    int sum = calc_sum(calc_handle);
+    printf("sum: %d\n", sum);
+    
+    calc_free(calc_handle);
+    
+    return 0;
+}
+
+main2.cpp
+------------------------------------------------------------------------------------------
+#include <stdio.h>
+
+#include "calc.h"
+#include "Calc.h"
+
+int main (void) {
+    printf("OOP with C\n");
+    
+    calc_handle_t calc_handle = calc_alloc();
+    if (NULL == calc_handle) {
+        fprintf(stderr, "calc_alloc() failed\n");
+        return 0;
+    }
+    
+    calc_num1_set(calc_handle, 10);
+    calc_num2_set(calc_handle, 20);
+    int sum = calc_sum(calc_handle);
+    printf("sum: %d\n", sum);
+    
+    calc_free(calc_handle);
+    
+    Calc calc; // constructor gets called
+    calc.num1_set(100); // allows you to call methods on that object
+    calc.num2_set(200);
+    sum = calc.sum_get();
+    printf("sum: %d\n", sum);
+    
+    
+    return 0;
+}
